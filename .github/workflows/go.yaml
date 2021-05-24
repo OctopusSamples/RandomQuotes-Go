@@ -42,6 +42,6 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: randomquotes.tar.bz2
-          asset_name: randomquotes.tar.bz2
+          asset_name: randomquotes.0.1.${{ github.run_number }}.tar.bz2
           asset_content_type: application/x-bzip2
 
