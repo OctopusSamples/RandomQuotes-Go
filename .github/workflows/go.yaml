@@ -18,7 +18,7 @@ jobs:
         with:
           go-version: '^1.16'
       - name: Build
-        run: go build cmd/server.go
+        run: go build server.go
 
       - name: Create package
         run: tar -cjf randomquotes.tar.bz2 server data web app.yaml
