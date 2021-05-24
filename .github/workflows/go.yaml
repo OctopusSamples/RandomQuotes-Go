@@ -20,6 +20,9 @@ jobs:
       - name: Build
         run: go build cmd/server.go
 
+      - name: Create package
+        run: tar -cjf randomquotes.tar.bz2 server data web
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -38,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: server
-          asset_name: server
-          asset_content_type: application/octet-stream
+          asset_path: randomquotes.tar.bz2
+          asset_name: randomquotes.tar.bz2
+          asset_content_type: application/x-bzip2
 
