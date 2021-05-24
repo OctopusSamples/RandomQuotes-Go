@@ -21,7 +21,7 @@ jobs:
         run: go build cmd/server.go
 
       - name: Create package
-        run: tar -cjf randomquotes.tar.bz2 server data web
+        run: tar -cjf randomquotes.tar.bz2 server data web app.yaml
 
       - name: Create Release
         id: create_release
