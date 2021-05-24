@@ -1,0 +1,2 @@
+runtime: go115
+entrypoint: server
