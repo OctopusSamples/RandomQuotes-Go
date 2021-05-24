@@ -1,0 +1,58 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Random Quotes</title>
+
+    <link href="./lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+
+    <script src="./lib/jquery/jquery.min.js" type="application/javascript"></script>
+    <script src="./lib/bootstrap/js/bootstrap.js" type="application/javascript"></script>
+    <script src="./js/index.js" type="application/javascript"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">Random Quotes</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container body-content">
+
+    <br><br>
+    <h2>Quotes as a Service</h2>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <blockquote>
+                <p id="quoteText">
+                </p>
+                <footer id="quoteAuthor">
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+
+    <button id="refreshQuote" class="btn btn-success btn-lg text-center">Refresh</button>
+
+    <hr>
+
+    <footer>
+        <p>&copy; 2018 - Random Quotes | Version <span id="appVersion"></span></p>
+    </footer>
+
+</div>
+
+</body>
+
+</html>
