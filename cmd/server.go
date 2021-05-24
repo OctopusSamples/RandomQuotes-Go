@@ -16,8 +16,14 @@ func main() {
 	http.Handle("/", fileServer)
 	http.HandleFunc("/api/quote", quoteHanlder)
 
-	fmt.Printf("Starting server at port 8080\n")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+
+	fmt.Printf("Starting server at port " + port + "\n")
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }
