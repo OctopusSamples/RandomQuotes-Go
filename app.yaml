@@ -1,2 +1,3 @@
 runtime: go115
 entrypoint: server
+service: randomquotes-go
