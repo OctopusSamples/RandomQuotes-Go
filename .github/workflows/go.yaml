@@ -57,4 +57,3 @@ jobs:
           push: true
           build-args: VERSION=0.1.${{ github.run_number }}
           tags: octopussamples/randomquotesgo:0.1.${{ github.run_number }}
-
