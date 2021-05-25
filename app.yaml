@@ -1,2 +1,6 @@
 runtime: go115
 service: randomquotes-go
+
+# APIENDPOINT environment variable points to an external quotes api endpoint
+#env_variables:
+#  APIENDPOINT: "https://us-central1-cohesive-feat-310021.cloudfunctions.net/my-java-function"
