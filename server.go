@@ -7,13 +7,15 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
+	"text/template"
 )
 
 const version = "1.0.0"
 
 func main() {
-	fileServer := http.FileServer(http.Dir("./web"))
-	http.Handle("/", fileServer)
+	http.HandleFunc("/", serveTemplate)
 	http.HandleFunc("/api/quote", quoteHandler)
 
 	port := os.Getenv("PORT")
@@ -26,6 +28,35 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func getApiEndpoint() string {
+	endpoint := os.Getenv("APIENDPOINT")
+	if endpoint == "" {
+		endpoint = "/api/quote"
+	}
+	return endpoint
+}
+
+func serveTemplate(w http.ResponseWriter, req *http.Request) {
+	cleanPath := filepath.Clean(req.URL.Path)
+
+	if strings.HasSuffix(cleanPath, ".js") {
+		w.Header().Set("Content-Type", "text/javascript")
+	} else if strings.HasSuffix(cleanPath, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+	} else if strings.HasSuffix(cleanPath, ".html") {
+		w.Header().Set("Content-Type", "html")
+	} else if strings.HasSuffix(cleanPath, ".ico") {
+		w.Header().Set("Content-Type", "image/png")
+	}
+
+	fp := filepath.Join("web", cleanPath)
+
+	tmpl, _ := template.ParseFiles(fp)
+	tmpl.Execute(w, map[string]string{
+		"api": getApiEndpoint(),
+	})
 }
 
 func quoteHandler(w http.ResponseWriter, r *http.Request) {
