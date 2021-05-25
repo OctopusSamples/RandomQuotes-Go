@@ -53,10 +53,14 @@ func serveTemplate(w http.ResponseWriter, req *http.Request) {
 
 	fp := filepath.Join("web", cleanPath)
 
-	tmpl, _ := template.ParseFiles(fp)
-	tmpl.Execute(w, map[string]string{
-		"api": getApiEndpoint(),
-	})
+	tmpl, err := template.ParseFiles(fp)
+	if err == nil {
+		tmpl.Execute(w, map[string]string{
+			"api": getApiEndpoint(),
+		})
+	} else {
+		w.WriteHeader(404)
+	}
 }
 
 func quoteHandler(w http.ResponseWriter, r *http.Request) {
