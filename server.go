@@ -14,7 +14,7 @@ const version = "1.0.0"
 func main() {
 	fileServer := http.FileServer(http.Dir("./web"))
 	http.Handle("/", fileServer)
-	http.HandleFunc("/api/quote", quoteHanlder)
+	http.HandleFunc("/api/quote", quoteHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -28,7 +28,7 @@ func main() {
 	}
 }
 
-func quoteHanlder(w http.ResponseWriter, r *http.Request) {
+func quoteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/api/quote" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
