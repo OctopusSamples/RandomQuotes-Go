@@ -1,66 +1,53 @@
-name: Go CI
-
-on:
-  push:
-  workflow_dispatch:
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v1
-
-      - uses: nelonoel/branch-name@v1.0.1
-
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16'
-      - name: Build
-        run: go build server.go
-
-      - name: Create package
-        run: tar -cjf randomquotes.tar.bz2 server data web app.yaml
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: 0.1.${{ github.run_number }}
-          release_name: Release 0.1.${{ github.run_number }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: randomquotes.tar.bz2
-          asset_name: randomquotes-go.0.1.${{ github.run_number }}.tar.bz2
-          asset_content_type: application/x-bzip2
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Main build and push
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          build-args: VERSION=0.1.${{ github.run_number }}
-          tags: octopussamples/randomquotesgo:0.1.${{ github.run_number }}
-          
-      - name: Main build and push latest
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          build-args: VERSION=0.1.${{ github.run_number }}
-          tags: octopussamples/randomquotesgo:latest
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: '0'
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: 5.x
+    - id: determine_version
+      name: Determine Version
+      uses: gittools/actions/gitversion/execute@v0.9.7
+    - name: Install Octopus Deploy CLI
+      uses: OctopusDeploy/install-octocli@v1.1.1
+      with:
+        version: latest
+    - name: Install Dependencies
+      run: go get ./...
+      shell: bash
+    - name: List Dependencies
+      run: go list > dependencies.txt
+      shell: bash
+    - name: Collect Dependencies
+      uses: actions/upload-artifact@v2
+      with:
+        name: Dependencies
+        path: dependencies.txt
+    - name: List Dependency Updates
+      run: go list -u -m -f "{{if .Update}}{{.}}{{end}}" all > dependencyUpdates.txt
+      shell: bash
+    - name: Collect Dependency Updates
+      uses: actions/upload-artifact@v2
+      with:
+        name: Dependencies Updates
+        path: dependencyUpdates.txt
+    - name: Test
+      run: go install gotest.tools/gotestsum@latest; gotestsum --junitfile results.xml || true
+      shell: bash
+    - if: always()
+      name: Report
+      uses: dorny/test-reporter@v1
+      with:
+        name: Go Tests
+        path: results.xml
+        reporter: java-junit
+        fail-on-error: 'false'
+    - run: go build
+name: Go Build
+'on':
+  workflow_dispatch: {}
+  push: {}
